@@ -11,7 +11,7 @@
   
   <title>
     
-      archive_a: 2022/7 
+      随笔 
       
       
       |
@@ -110,41 +110,104 @@
 
 
       <div class="flex-container">
-        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<!-- last: 按年份把文章分组，当前遍历到的年份 -->
-<!-- now: 当前遍历到的文章的发布年份 -->
 
-<div class="container archives">
-  <div class="post-list">
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2022</span>
-          </h2>
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">随笔</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-07-08 23:44:34
+        </span>
+        
+      </div>
+      <div class="markdown-body">
+        <p>今天本以为是一个普通的周五，想着如何摸完一天的鱼赶紧回家。</p>
+<p>在各大微信群里就看到铺天盖地的安倍被刺杀的新闻和视频。对于安倍的死，我没什么想说的，也没有在网上跟风玩梗，也没圣母心。就是单纯的感觉和我无关，事不关己高高挂起，让我觉得稍微有点好玩的，在历史中也不是每个人都能经历到国家元首被刺杀身亡这件事。</p>
+<p>所以就想随笔记录下来，知道原来我也经历过一些历史事件。</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/07/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-07-08 23:44:34
+            </span>
+            
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
       
-      <div class="post-item" title="随笔">
-        <div class="time-m-d">07-08</div>
-        <div class="title">
-          <a href="/2022/07/08/%E9%9A%8F%E7%AC%94/">
-            <span>随笔</span>
-          </a>
-        </div>
-      </div>
+    </div>
     
-      <div class="post-item" title="我的第一篇博客">
-        <div class="time-m-d">07-02</div>
-        <div class="title">
-          <a href="/2022/07/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">
-            <span>我的第一篇博客</span>
-          </a>
-        </div>
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
   </div>
-</div>
+
 
         
 <div class="footer">
@@ -398,6 +461,24 @@
 
 
         
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E9%9A%8F%E7%AC%94 + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2022%2F07%2F08%2F%25E9%259A%258F%25E7%25AC%2594%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2022/07/08/%E9%9A%8F%E7%AC%94/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
   
   
 <script src="/js/shares.js"></script>
