@@ -11,6 +11,11 @@
   
   <title>
     
+      PHP单元测试Mock重载 
+      
+      
+      |
+    
      我的精神家园
   </title>
 
@@ -105,82 +110,132 @@
 
 
       <div class="flex-container">
-        <div class="container index">
-  <div class="post-list">
-    <!-- 遍历渲染文章 -->
-    
-      <div class="post-item" title="PHP单元测试Mock重载">
-        <div class="time-m-d">2022-07-23</div>
-        <div class="title">
-          <a href="/2022/07/23/PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD/">
-            
-              
-                <span>PHP单元测试Mock重载</span>
-              
-            
-          </a>
-        </div>
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+
+
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">PHP单元测试Mock重载</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-07-23 21:56:39
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="标签"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/php/" title="php">
+                    <b>#</b> php
+                  </a>
+                </span>
+                
+              </span>
+          
       </div>
-    
-      <div class="post-item" title="记录一次自驾游旅行">
-        <div class="time-m-d">2022-07-17</div>
-        <div class="title">
-          <a href="/2022/07/17/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E8%87%AA%E9%A9%BE%E6%B8%B8%E6%97%85%E8%A1%8C/">
-            
-              
-                <span>记录一次自驾游旅行</span>
-              
-            
-          </a>
-        </div>
+      <div class="markdown-body">
+        <p>这篇博客主要是为了分享和记录一下自己在写单元测试时候遇到的一个问题。这周写的某个需求需要分析微博博文的情绪类型，用到了阿里云的nlp的sdk。然后我需要集成到公司的私有sdk里方便在各个项目里使用。</p>
+<p>使用现成的sdk倒是没什么难度，但是在写sdk的单元测试的时候遇到问题了，本身sdk就是发http请求获取响应，但是不知道为什么用Laravel官方的<code>Http::fake()</code>模拟方法不顶用，依旧发出去了真实的请求，这样单元测试是无法通过的，因为用的都是测试数据，需要模拟响应看返回的数据是否符合预期。</p>
+<p>代码大致如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">some_nlp_api</span>(<span class="params">tring <span class="variable">$text</span></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="variable">$config</span> = <span class="keyword">new</span> <span class="title class_">Config</span>();</span><br><span class="line">		<span class="variable">$config</span>-&gt;text = <span class="variable">$text</span>;</span><br><span class="line">		<span class="variable">$client</span> = <span class="keyword">new</span> <span class="title class_">NlpClient</span>();</span><br><span class="line">		<span class="variable">$response</span> = <span class="variable">$client</span>-&gt;<span class="title function_ invoke__">emotion</span>(<span class="variable">$text</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="variable">$response</span>-&gt;body;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClientTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test_some_nlp_api</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="title class_">Http</span>::<span class="title function_ invoke__">fake</span>([<span class="string">&quot;*&quot;</span>=&gt;<span class="title class_">Http</span>::<span class="title function_ invoke__">reponse</span>([<span class="string">&#x27;foo&#x27;</span>=&gt;<span class="string">&#x27;bar&#x27;</span>])]);</span><br><span class="line">		<span class="variable">$client</span> = <span class="keyword">new</span> <span class="title class_">Client</span>();</span><br><span class="line">		<span class="variable">$result</span> = <span class="variable">$client</span>-&gt;<span class="title function_ invoke__">some_nlp_api</span>(<span class="string">&#x27;test&#x27;</span>);</span><br><span class="line">				<span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">assertTrue</span>([<span class="string">&#x27;foo&#x27;</span>=&gt;<span class="string">&#x27;bar&#x27;</span>] == <span class="variable">$result</span>); <span class="comment">// 请求一直发出去了导致测试一直不通过</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>后来想起Mock有个重载的操作，可以解决依赖让你只关注当前测试的方法而不用去关注其他不相关的方法。使用方法如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClientTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test_some_nlp_api</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">	</span>&#123;</span><br><span class="line">		<span class="variable">$mock</span> = <span class="title class_">Mock</span>::<span class="title function_ invoke__">mock</span>(<span class="string">&#x27;overload:&#x27;</span>.<span class="title class_">NlpClient</span>::<span class="variable language_">class</span>); <span class="comment">// 重载NlpClient类</span></span><br><span class="line">		<span class="variable">$mock</span>-&gt;<span class="title function_ invoke__">shouldReceive</span>(<span class="string">&#x27;emotion&#x27;</span>)-&gt;<span class="title function_ invoke__">andReturn</span>([<span class="string">&#x27;foo&#x27;</span>=&gt;<span class="string">&#x27;bar&#x27;</span>]);</span><br><span class="line">		<span class="variable">$client</span> = <span class="keyword">new</span> <span class="title class_">Client</span>();</span><br><span class="line">		<span class="variable">$result</span> = <span class="variable">$client</span>-&gt;<span class="title function_ invoke__">some_nlp_api</span>(<span class="string">&#x27;test&#x27;</span>);</span><br><span class="line">		<span class="variable language_">$this</span>-&gt;<span class="title function_ invoke__">assertTrue</span>([<span class="string">&#x27;foo&#x27;</span>=&gt;<span class="string">&#x27;bar&#x27;</span>] == <span class="variable">$result</span>); <span class="comment">// 这样这个方法就被彻底模拟了</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>特此记下来避免下次写单元测试的时候忘记了，顺便加强下自己的记忆！</p>
+
       </div>
-    
-      <div class="post-item" title="分享工作环境docker配置">
-        <div class="time-m-d">2022-07-16</div>
-        <div class="title">
-          <a href="/2022/07/16/%E5%88%86%E4%BA%AB%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83docker%E9%85%8D%E7%BD%AE/">
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
             
-              
-                <span>分享工作环境docker配置</span>
-              
+              <a href="/2022/07/17/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E8%87%AA%E9%A9%BE%E6%B8%B8%E6%97%85%E8%A1%8C/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
             
-          </a>
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-07-23 21:56:39
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="标签"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/php/" title="php">
+                        <b>#</b> php
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
-      </div>
+      
+    </div>
     
-      <div class="post-item" title="随笔">
-        <div class="time-m-d">2022-07-08</div>
-        <div class="title">
-          <a href="/2022/07/08/%E9%9A%8F%E7%AC%94/">
-            
-              
-                <span>随笔</span>
-              
-            
-          </a>
-        </div>
-      </div>
+
     
-      <div class="post-item" title="我的第一篇博客">
-        <div class="time-m-d">2022-07-02</div>
-        <div class="title">
-          <a href="/2022/07/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">
-            
-              
-                <span>我的第一篇博客</span>
-              
-            
-          </a>
-        </div>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
   </div>
-  <nav class="post-navigation">
-    
-    <span class="page-num">1 / 1</span>
-    
-  </nav>
-</div>
+
 
         
 <div class="footer">
@@ -434,6 +489,24 @@
 
 
         
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2022%2F07%2F23%2FPHP%25E5%258D%2595%25E5%2585%2583%25E6%25B5%258B%25E8%25AF%2595Mock%25E9%2587%258D%25E8%25BD%25BD%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2022/07/23/PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
   
   
 <script src="/js/shares.js"></script>
