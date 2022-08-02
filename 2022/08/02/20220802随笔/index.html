@@ -11,7 +11,7 @@
   
   <title>
     
-      archive_a: 2022/7 
+      20220802随笔 
       
       
       |
@@ -110,77 +110,128 @@
 
 
       <div class="flex-container">
-        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
+        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
+<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
 
-<!-- last: 按年份把文章分组，当前遍历到的年份 -->
-<!-- now: 当前遍历到的文章的发布年份 -->
 
-<div class="container archives">
-  <div class="post-list">
-    
-        <!-- 后续文章的发布年份呈现 -->
-        <div class="content-title">
-          <h2>
-            <span>2022</span>
-          </h2>
+  <!-- LaTex Display -->
+
+  
+    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
+  
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    }
+  </script>
+
+
+
+
+
+  <!-- clipboard -->
+
+  
+    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
+  
+  
+<script src="/js/codeCopy.js"></script>
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">20220802随笔</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-08-02 21:18:35
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="标签"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
+                    <b>#</b> 碎碎念
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>最近不知道写什么。那就记录一下最近发生的事情吧。</p>
+<p>上周找到了心仪的房子周日搬了过来，直到昨天才收拾的差不多。</p>
+<p>昨天为了上个房子的押金退租问题跟房东大吵了一架，发现自己沟通能力很糟糕。按照女朋友的话来说无法控制自己的情绪，说话没有逻辑也不能很好的做一个倾听者。希望我以后可以多注意这方面，不过好在押金的事情沟通的有些气色了。</p>
+<p>最近美国的国会议长访问台湾的事情闹的沸沸扬扬，国内也在摩拳擦掌地做着准备以防美国不听劝阻的挑衅行为。不知道后续进展会如何，不知道我们会不会是历史的见证者。</p>
+<p>发现自己写作能力真差，我离作家的距离好远。</p>
+
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/07/23/PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-08-02 21:18:35
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="标签"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
+                        <b>#</b> 碎碎念
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
         </div>
       
-      <div class="post-item" title="20220802随笔">
-        <div class="time-m-d">08-02</div>
-        <div class="title">
-          <a href="/2022/08/02/20220802%E9%9A%8F%E7%AC%94/">
-            <span>20220802随笔</span>
-          </a>
-        </div>
-      </div>
+    </div>
     
-      <div class="post-item" title="PHP单元测试Mock重载">
-        <div class="time-m-d">07-23</div>
-        <div class="title">
-          <a href="/2022/07/23/PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD/">
-            <span>PHP单元测试Mock重载</span>
-          </a>
-        </div>
-      </div>
+
     
-      <div class="post-item" title="记录一次自驾游旅行">
-        <div class="time-m-d">07-17</div>
-        <div class="title">
-          <a href="/2022/07/17/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E8%87%AA%E9%A9%BE%E6%B8%B8%E6%97%85%E8%A1%8C/">
-            <span>记录一次自驾游旅行</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="分享工作环境docker配置">
-        <div class="time-m-d">07-16</div>
-        <div class="title">
-          <a href="/2022/07/16/%E5%88%86%E4%BA%AB%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83docker%E9%85%8D%E7%BD%AE/">
-            <span>分享工作环境docker配置</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="随笔">
-        <div class="time-m-d">07-08</div>
-        <div class="title">
-          <a href="/2022/07/08/%E9%9A%8F%E7%AC%94/">
-            <span>随笔</span>
-          </a>
-        </div>
-      </div>
-    
-      <div class="post-item" title="我的第一篇博客">
-        <div class="time-m-d">07-02</div>
-        <div class="title">
-          <a href="/2022/07/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">
-            <span>我的第一篇博客</span>
-          </a>
-        </div>
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
       </div>
     
   </div>
-</div>
+
 
         
 <div class="footer">
@@ -434,6 +485,24 @@
 
 
         
+  
+    <div class="share-icon tools-bar-item">
+      <a href="javascript: void(0)" id="share-icon">
+        <i class="iconfont iconshare"></i>
+      </a>
+      <div class="share-content hidden">
+        
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + 20220802%E9%9A%8F%E7%AC%94 + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2022%2F08%2F02%2F20220802%25E9%259A%258F%25E7%25AC%2594%2F + '" target="_blank" title="Twitter">
+            <i class="iconfont icon-twitter"></i>
+          </a>
+        
+        
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2022/08/02/20220802%E9%9A%8F%E7%AC%94/" target="_blank" title="Facebook">
+            <i class="iconfont icon-facebooksquare"></i>
+          </a>
+        
+      </div>
+    </div>
   
   
 <script src="/js/shares.js"></script>
