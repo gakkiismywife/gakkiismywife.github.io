@@ -177,7 +177,7 @@
       <div class="markdown-body">
         <p>公司文件服务截图功能使用的是ChromeDp，为了节省服务器资源，希望将chrome隔离起来。</p>
 <p>首先拉取chrome镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull chromedp/headless-shell:latest</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull chromedp/headless-shell:latest</span><br></pre></td></tr></table></figure>
 
 <p>启用镜像</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 9222:9222 --<span class="built_in">rm</span> --name headless-shell --shm-size 2G chromedp/headless-shell</span><br></pre></td></tr></table></figure>
