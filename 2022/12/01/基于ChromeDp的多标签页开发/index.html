@@ -11,7 +11,7 @@
   
   <title>
     
-      标签 
+      基于ChromeDp的多标签页开发 
       
       
       |
@@ -144,21 +144,91 @@
 
 
 
-  <!-- 标签页 url形式：https://yoursite/tags/ -->
-  <div class="container tag-index">
-    <div>
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Golang/" rel="tag">Golang</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/php/" rel="tag">php</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="tag">碎碎念</a><span class="tag-list-count">8</span></li></ul>
+
+  
+
+  
+
+  
+
+  
+  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
+  <div class="container post-details" id="post-details">
+    <div class="post-content">
+      <div class="post-title">基于ChromeDp的多标签页开发</div>
+      <div class="post-attach">
+        <span class="post-pubtime">
+          <i class="iconfont icon-updatetime" title="更新时间"></i>
+          2022-12-01 11:56:44
+        </span>
+        
+              <span class="post-tags">
+                <i class="iconfont icon-tags" title="标签"></i>
+                
+                <span class="span--tag">
+                  <a href="/tags/Golang/" title="Golang">
+                    <b>#</b> Golang
+                  </a>
+                </span>
+                
+              </span>
+          
+      </div>
+      <div class="markdown-body">
+        <p>最近恰逢世界杯，公司的剪辑业务蹭了一波热度，开发了一个活动页面，其中有个截图功能，目前的实现方式是，一个截图请求对应打开一个chrome进程。因为考虑到一瞬间流量打进来导致会打开N个浏览器进程 进而可能会有导致服务器内存增大的风险。所以临时接到任务，想要改写截图的逻辑，最好可以保持一个chrome进程，使用多选项卡的方式，请求完成后关闭选项卡，达到一个优化的效果</p>
+<p>实现方式如下，主要是为了自己的记忆：</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (  </span><br><span class="line">   <span class="string">&quot;context&quot;</span>  </span><br><span class="line">   <span class="string">&quot;fmt&quot;</span>   </span><br><span class="line">   <span class="string">&quot;github.com/chromedp/cdproto/cdp&quot;</span> </span><br><span class="line">   <span class="string">&quot;github.com/chromedp/cdproto/page&quot;</span></span><br><span class="line">   <span class="string">&quot;github.com/chromedp/chromedp&quot;</span></span><br><span class="line">   <span class="string">&quot;github.com/gin-gonic/gin&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> ChromeCtx context.Context</span><br><span class="line"><span class="keyword">var</span> AllocateCancel context.Context</span><br><span class="line"><span class="keyword">var</span> Cancel context.CancelFunc</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	Ctx, Cancel = initContext()  </span><br><span class="line">	g := gin.Default()  </span><br><span class="line">	  </span><br><span class="line">	g.Handle(<span class="string">&quot;GET&quot;</span>, <span class="string">&quot;/&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;  </span><br><span class="line">	   url := c.Query(<span class="string">&quot;url&quot;</span>)  </span><br><span class="line">	   visit(url)  </span><br><span class="line">	&#125;)  </span><br><span class="line">	  </span><br><span class="line">	g.Run(<span class="string">&quot;:8888&quot;</span>)  </span><br><span class="line"></span><br><span class="line">	<span class="comment">// 服务关闭后 关闭浏览器进程</span></span><br><span class="line">	<span class="keyword">defer</span> AllocateCancel()</span><br><span class="line">	<span class="keyword">defer</span> Cancel()</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initContext</span><span class="params">()</span></span> (context.Context, context.CancelFunc) &#123;</span><br><span class="line">		<span class="comment">//chrome配置</span></span><br><span class="line">		opts := <span class="built_in">append</span>(</span><br><span class="line">		chromedp.DefaultExecAllocatorOptions[:],  </span><br><span class="line">		chromedp.DisableGPU,    </span><br><span class="line">		chromedp.Flag(<span class="string">&quot;headless&quot;</span>, <span class="literal">false</span>),  </span><br><span class="line">		chromedp.Flag(<span class="string">&quot;enable-automation&quot;</span>, <span class="literal">false</span>),  </span><br><span class="line">		chromedp.Flag(<span class="string">&quot;restore-on-startup&quot;</span>, <span class="literal">false</span>),  </span><br><span class="line">		)</span><br><span class="line"></span><br><span class="line">		<span class="comment">//创建allocator上下文 我的理解为浏览器的上下文 打开浏览器进程</span></span><br><span class="line">		allocCtx,AllocateCtx := chromedp.NewExecAllocator(context.Background(),opts..)</span><br><span class="line"></span><br><span class="line">		<span class="comment">//创建请求的上下文  </span></span><br><span class="line">		ctx, cancel := chromedp.NewContext(allocCtx)</span><br><span class="line">		<span class="comment">//固定打开一个标签页  </span></span><br><span class="line">		_ = chromedp.Run(ctx, chromedp.Navigate(<span class="string">&quot;about:blank&quot;</span>))  </span><br><span class="line">		</span><br><span class="line">		<span class="keyword">return</span> ctx, cancel  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">visit</span><span class="params">(url <span class="type">string</span>)</span></span>&#123;</span><br><span class="line">	tmpCtx, tmpCancel := chromedp.NewContext(Ctx)  </span><br><span class="line">	  </span><br><span class="line">	<span class="comment">// 打开一个新的tab  </span></span><br><span class="line">	<span class="keyword">if</span> err := chromedp.Run(tmpCtx, chromedp.Navigate(url)); err != <span class="literal">nil</span> &#123;  </span><br><span class="line">	   <span class="built_in">panic</span>(err)  </span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 请求完后关闭当前tab</span></span><br><span class="line">	err := page.Close().Do(cdp.WithExecutor(tmpCtx, chromedp.FromContext(tmpCtx).Target))  </span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;  </span><br><span class="line">	   fmt.Println(err)  </span><br><span class="line">	   <span class="keyword">return</span>  </span><br><span class="line">	&#125;</span><br><span class="line">	Ctx,Cancel = tmpCtx,tmpCancel</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      </div>
+      
+        <div class="prev-or-next">
+          <div class="post-foot-next">
+            
+              <a href="/2022/11/01/%E5%81%9A%E8%87%AA%E5%B7%B1/" target="_self">
+                <i class="iconfont icon-chevronleft"></i>
+                <span>上一页</span>
+              </a>
+            
+          </div>
+          <div class="post-attach">
+            <span class="post-pubtime">
+              <i class="iconfont icon-updatetime" title="更新时间"></i>
+              2022-12-01 11:56:44
+            </span>
+            
+                  <span class="post-tags">
+                    <i class="iconfont icon-tags" title="标签"></i>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/Golang/" title="Golang">
+                        <b>#</b> Golang
+                      </a>
+                    </span>
+                    
+                  </span>
+              
+          </div>
+          <div class="post-foot-prev">
+            
+          </div>
+        </div>
+      
     </div>
+    
+
+    
+      <div class="comments-container">
+        
+
+
+
+
+
+
+
+      </div>
+    
   </div>
-  
 
-  
-
-  
-
-  
-
-  
 
         
 <div class="footer">
@@ -419,12 +489,12 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + tags + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2Ftags%2Findex.html + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E5%9F%BA%E4%BA%8EChromeDp%E7%9A%84%E5%A4%9A%E6%A0%87%E7%AD%BE%E9%A1%B5%E5%BC%80%E5%8F%91 + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2022%2F12%2F01%2F%25E5%259F%25BA%25E4%25BA%258EChromeDp%25E7%259A%2584%25E5%25A4%259A%25E6%25A0%2587%25E7%25AD%25BE%25E9%25A1%25B5%25E5%25BC%2580%25E5%258F%2591%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/tags/index.html" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2022/12/01/%E5%9F%BA%E4%BA%8EChromeDp%E7%9A%84%E5%A4%9A%E6%A0%87%E7%AD%BE%E9%A1%B5%E5%BC%80%E5%8F%91/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         
