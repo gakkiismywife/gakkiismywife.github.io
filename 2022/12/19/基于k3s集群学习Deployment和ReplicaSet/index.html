@@ -175,7 +175,35 @@
           
       </div>
       <div class="markdown-body">
-        
+        <p><strong>Deployment</strong>是对ReplicaSet和Pod更高级的抽象。</p>
+<p>它使Pod拥有多副本，自愈，扩缩容、滚动升级等能力</p>
+<p><strong>ReplicaSet</strong>(副本集)是一个Pod的集合。</p>
+<p>它可以设置运行Pod的数量，确保任何时间都有指定数量的 Pod 副本在运行。</p>
+<p>通常我们不直接使用ReplicaSet，而是在Deployment中声明。</p>
+<h3 id="创建Deployment"><a href="#创建Deployment" class="headerlink" title="创建Deployment"></a>创建Deployment</h3><ul>
+<li>第一种方法是通过命令行创建<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建deployment,部署3个运行nginx的Pod</span> </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">nginx-deployment是deployment的name --image是指定容器镜像</span></span><br><span class="line">kubectl create deployment nginx-deployment --image=nginx:1.22 --replicas=3 </span><br></pre></td></tr></table></figure></li>
+<li>第二种方法是通过yaml文件创建，示例文件如下：<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span>  <span class="comment"># 类型deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span>  <span class="comment"># deployment的name</span></span><br><span class="line">  <span class="attr">labels:</span> <span class="comment"># lables标签 键值对</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">3</span> <span class="comment"># 副本数量 创建三个pod副本</span></span><br><span class="line">  <span class="attr">selector:</span>  <span class="comment"># 定义 Deployment 如何查找要管理的 Pod</span></span><br><span class="line">    <span class="attr">matchLabels:</span> <span class="comment"># 匹配lables标签 ：app=nginx的pod</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx</span> <span class="comment"># 声明lables标签</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span> <span class="comment"># 容器名称</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx:1.22</span> <span class="comment">#容器镜像</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+执行命令<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f deployment-nginx.yaml</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="管理Deployement"><a href="#管理Deployement" class="headerlink" title="管理Deployement"></a>管理Deployement</h3><ul>
+<li>查看deployment<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get deployments</span><br><span class="line">NAME               READY   UP-TO-DATE   AVAILABLE   AGE</span><br><span class="line">nginx-deployment   3/3     3            3           14h</span><br></pre></td></tr></table></figure>
+在检查集群中的 Deployment 时，所显示的字段有：</li>
+</ul>
+<p><code>NAME</code> 列出了namespace中 Deployment 的名称。<br><code>READY</code> 显示应用程序的可用的“副本”数。显示的模式是“就绪个数&#x2F;期望个数”。<br><code>UP-TO-DATE</code> 显示为了达到期望状态已经更新的副本数。<br><code>AVAILABLE</code> 显示应用可供用户使用的副本数。<br><code>AGE</code> 显示应用程序运行的时间</p>
+<ul>
+<li><p>查看 Deployment 上线状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl rollout status deployment/nginx-deployment</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">输出</span></span><br><span class="line">deployment &quot;nginx-deployment&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看 Deployment 创建的 ReplicaSet</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl get rs</span><br><span class="line">NAME                          DESIRED   CURRENT   READY   AGE</span><br><span class="line">nginx-deployment-79b458c974   3         3         3       14h</span><br></pre></td></tr></table></figure>
+<p>ReplicaSet 输出中包含以下字段：</p>
+</li>
+</ul>
+<p><code>NAME</code> 列出namespace中 ReplicaSet 的名称；<br><code>DESIRED</code> 显示应用的期望副本个数，即在创建 Deployment 时所定义的值。 此为期望状态<br><code>CURRENT</code> 显示当前运行状态中的副本个数；<br><code>READY</code> 显示应用中有多少副本可以为用户提供服务；<br><code>AGE</code> 显示应用已经运行的时间长度。</p>
+<ul>
+<li>查看每个pod生成的标签<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods --show-labels</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE     LABELS</span><br><span class="line">nginx-deployment-79b458c974-6drv6   1/1     Running   0          14h     app=nginx-deployment,pod-template-hash=79b458c974</span><br><span class="line">nginx-deployment-79b458c974-l4b6s   1/1     Running   0          11h     app=nginx-deployment,pod-template-hash=79b458c974</span><br><span class="line">nginx-deployment-79b458c974-4jbn2   1/1     Running   0          7h15m   app=nginx-deployment,pod-template-hash=79b458c974</span><br></pre></td></tr></table></figure></li>
+</ul>
+
       </div>
       
         <div class="prev-or-next">
@@ -212,6 +240,23 @@
       
     </div>
     
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BADeployment"><span class="toc-text">创建Deployment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86Deployement"><span class="toc-text">管理Deployement</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
 
     
       <div class="comments-container">
