@@ -191,6 +191,9 @@
 </ul>
 <p><code>NAME</code> 列出了namespace中 Deployment 的名称。<br><code>READY</code> 显示应用程序的可用的“副本”数。显示的模式是“就绪个数&#x2F;期望个数”。<br><code>UP-TO-DATE</code> 显示为了达到期望状态已经更新的副本数。<br><code>AVAILABLE</code> 显示应用可供用户使用的副本数。<br><code>AGE</code> 显示应用程序运行的时间</p>
 <ul>
+<li><p>查看指定deployment</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get deployment/nginx-deployment  [-owide]</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>查看 Deployment 上线状态</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl rollout status deployment/nginx-deployment</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">输出</span></span><br><span class="line">deployment &quot;nginx-deployment&quot; successfully rolled out</span><br></pre></td></tr></table></figure>
 </li>
@@ -202,6 +205,31 @@
 <p><code>NAME</code> 列出namespace中 ReplicaSet 的名称；<br><code>DESIRED</code> 显示应用的期望副本个数，即在创建 Deployment 时所定义的值。 此为期望状态<br><code>CURRENT</code> 显示当前运行状态中的副本个数；<br><code>READY</code> 显示应用中有多少副本可以为用户提供服务；<br><code>AGE</code> 显示应用已经运行的时间长度。</p>
 <ul>
 <li>查看每个pod生成的标签<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods --show-labels</span><br><span class="line">NAME                                READY   STATUS    RESTARTS   AGE     LABELS</span><br><span class="line">nginx-deployment-79b458c974-6drv6   1/1     Running   0          14h     app=nginx-deployment,pod-template-hash=79b458c974</span><br><span class="line">nginx-deployment-79b458c974-l4b6s   1/1     Running   0          11h     app=nginx-deployment,pod-template-hash=79b458c974</span><br><span class="line">nginx-deployment-79b458c974-4jbn2   1/1     Running   0          7h15m   app=nginx-deployment,pod-template-hash=79b458c974</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="扩容缩放"><a href="#扩容缩放" class="headerlink" title="扩容缩放"></a>扩容缩放</h3><ul>
+<li><p>手动缩放</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将副本数量调整为5</span></span><br><span class="line">kubectl scale deployment/nginx-deployment --replicas=5</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动缩放</p>
+</li>
+</ul>
+<p>自动缩放通过增加和减少副本的数量，以保持所有 Pod 的平均 CPU 利用率不超过 75%。<br>自动伸缩需要声明Pod的资源限制，同时使用 <a target="_blank" rel="noopener" href="https://github.com/kubernetes-sigs/metrics-server#readme">Metrics Server</a> 服务（K3s默认已安装）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">自动缩放</span></span><br><span class="line">kubectl autoscale deployment/nginx-auto --min=3 --max=10 --cpu-percent=75 </span><br></pre></td></tr></table></figure>
+
+
+<h3 id="滚动更新"><a href="#滚动更新" class="headerlink" title="滚动更新"></a>滚动更新</h3><ul>
+<li>更新nginx镜像<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">更新容器镜像</span></span><br><span class="line">kubectl set image deployment/nginx-deployment nginx=nginx:1.23</span><br></pre></td></tr></table></figure></li>
+<li>查看更新过程<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看过程</span></span><br><span class="line">kubectl get rs --watch</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="版本回滚"><a href="#版本回滚" class="headerlink" title="版本回滚"></a>版本回滚</h3><ul>
+<li><p>查看历史版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">查看历史版本</span></span><br><span class="line">kubectl rollout history deployment/nginx-deployment</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看指定版本的信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl rollout history deployment/nginx-deployment --revision=2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>回滚到历史版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl rollout undo deployment/nginx-deployment --to-revision=2</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       </div>
@@ -247,7 +275,7 @@
     <div class="title">目录</div>
     <div class="catalog-content">
       
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BADeployment"><span class="toc-text">创建Deployment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86Deployement"><span class="toc-text">管理Deployement</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BADeployment"><span class="toc-text">创建Deployment</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E7%90%86Deployement"><span class="toc-text">管理Deployement</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A9%E5%AE%B9%E7%BC%A9%E6%94%BE"><span class="toc-text">扩容缩放</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0"><span class="toc-text">滚动更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%9B%9E%E6%BB%9A"><span class="toc-text">版本回滚</span></a></li></ol>
       
     </div>
   </div>
