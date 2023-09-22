@@ -11,7 +11,7 @@
   
   <title>
     
-      总想写点什么 
+      Golang项目基于Jenkins的CI/CD构建发布部署流程 
       
       
       |
@@ -155,19 +155,25 @@
   <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
   <div class="container post-details" id="post-details">
     <div class="post-content">
-      <div class="post-title">总想写点什么</div>
+      <div class="post-title">Golang项目基于Jenkins的CI/CD构建发布部署流程</div>
       <div class="post-attach">
         <span class="post-pubtime">
           <i class="iconfont icon-updatetime" title="更新时间"></i>
-          2023-08-13 22:44:26
+          2023-09-22 13:40:39
         </span>
         
               <span class="post-tags">
                 <i class="iconfont icon-tags" title="标签"></i>
                 
                 <span class="span--tag">
-                  <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
-                    <b>#</b> 碎碎念
+                  <a href="/tags/Jenkins/" title="Jenkins">
+                    <b>#</b> Jenkins
+                  </a>
+                </span>
+                
+                <span class="span--tag">
+                  <a href="/tags/DevOps/" title="DevOps">
+                    <b>#</b> DevOps
                   </a>
                 </span>
                 
@@ -175,15 +181,54 @@
           
       </div>
       <div class="markdown-body">
-        <p>从上一次失业距离现在已经过了2个月了，找了个小公司先干着。</p>
-<p>差不多快半年没写博客了，所以总想着要写点什么，但是最近没什么任何精力。</p>
+        <p>最近入职一家新公司，公司只有我一个后端。从上一个后端那接手过来了整个项目，虽然薪资比较低，不过想着这次可以完全自由发挥，还是有利有弊的。</p>
+<p>经过几天的熟悉项目之后，感觉每次需要在本地构建二进制文件，然后再通过ftp传到服务器再重启服务，整个流程相当耗时费力，为了偷懒，我开始使用jenkins去简化整个发布流程。</p>
+<p>这篇博客是为了记录我本人的整个部署过程方便日后回忆。</p>
+<h5 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h5><p>目前两台服务器</p>
+<p>应用服务器：2核4g<br>Jenkins服务器：4核8g</p>
+<p>仓库管理使用的是gitea，搭建在jenkins服务器。</p>
+<p>不要问我为什么应用服务器的配置为什么这么低，我接手过来就是这样的，所以我不想把其他应用都部署到应用服务器，以免应用服务器资源不够。</p>
+<h5 id="安装Jenkins"><a href="#安装Jenkins" class="headerlink" title="安装Jenkins"></a>安装Jenkins</h5><p>我是直接使用docker-compose的方式进行的安装，主要是为了方便简单。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">jenkins:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">jenkins/jenkins:lts</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&quot;8080:8080&quot;</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">jenkins_home:/var/jenkins_home</span></span><br><span class="line">  <span class="attr">ssh-agent:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">jenkins/ssh-agent</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">jenkins_home:</span></span><br></pre></td></tr></table></figure>
+
+<p>直接使用<code>docker-compose up -d</code>的方式启动Jenkins容器</p>
+<p>此时可以通过<code>http://&lt;server-ip&gt;:8080</code>的方式访问Jenkins的web页面，需要一个token，token就在日志里，可以直接使用<code>docker logs &lt;container-id&gt;</code>的方式查看，里面有一个token填进去就OK了。</p>
+<p>正常就注册账号密码，然后按照推荐插件进行安装就行，插件等待几分钟安装完成即可。</p>
+<h5 id="安装Go环境"><a href="#安装Go环境" class="headerlink" title="安装Go环境"></a>安装Go环境</h5><p>因为是golang的项目，编译golang需要安装golang的环境，有两种方法可以安装。</p>
+<p>第一种 直接在容器里安装golang环境，将go&#x2F;bin&#x2F;添加到环境变量种<br>第二种 在<code>系统管理</code>的<code>插件管理</code>中搜索并安装<code>go</code>插件，然后<code>全局工具配置</code>中找到<code>Go安装</code>模块，点击<code>Go安装</code>，设置别名和go的版本保存。最后在任务配置中的<code>构建环境</code>模块勾选<code>Set up Go programming language tools</code>并选择你需要的go版本</p>
+<p>我这里是直接在容器内安装的golang环境，因为用第二种方式安装，下载安装包老是超时，我没去解决直接用最简单的方式跳过了。</p>
+<h5 id="构建任务配置"><a href="#构建任务配置" class="headerlink" title="构建任务配置"></a>构建任务配置</h5><p>其他配置不再赘述，主要记录我的Build Step。</p>
+<p>我目前分了三个Build Step方便区分。</p>
+<h6 id="构建"><a href="#构建" class="headerlink" title="构建"></a>构建</h6><p>第一个步骤是用来构建一个二进制文件 设置构建的系统和架构</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">设置go proxy</span></span><br><span class="line">export GOPROXY=https://goproxy.cn</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">编译</span></span><br><span class="line">GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o go-admin .</span><br></pre></td></tr></table></figure>
+
+<h6 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h6><p>第二个步骤是用来上传二进制文件到服务器<code>/builds/go-admin/</code>文件夹中，文件名为<code>go-admin</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将编译好的go-admin传到应有服务器</span></span><br><span class="line">scp -o StrictHostKeyChecking=no ./go-admin root@39.108.188.218:/builds/go-admin/go-admin</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>在做这步之前需要在当前Jenkins容器中生成一个ssh_key：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -b 4096</span><br></pre></td></tr></table></figure>
+
+<p>然后将<code>.ssh/id_rsa.pub</code>的密钥复制到应用服务器的<code>.ssh/authorized_keys</code>中</p>
+<p>最后在<code>系统管理</code>的<code>凭据管理</code>中添加全局凭证 。  </p>
+<p>具体细节可以参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/huanghailiang_ws/article/details/115380007?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-1-115380007-blog-89402921.235%5Ev38%5Epc_relevant_sort&spm=1001.2101.3001.4242.2&utm_relevant_index=4">Jenkins远程传送以及执行远程命令</a></p>
+<p>做这一步是为了ssh连接可以不用输入密码</p>
+<h5 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h5><p>第三个步骤是通过ssh到应用服务器去部署。<br>在做这步之前需要完成以下步骤：</p>
+<ol>
+<li>在<code>插件管理</code>中安装<code>SSH</code>插件。</li>
+<li>在<code>系统管理</code>的<code>系统配置</code>中添加ssh相关配置。因为在第二步已经将ssh密钥添加到了应用服务器，所以可以直接连接</li>
+</ol>
+<p>然后在任务配置中Build Steps选择<code>Execute shell script on remote host using ssh</code><br>选择刚才设置的应用服务器，在<code>Command</code>的输入框中填入对应的命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">进入go-admin项目的二进制归档目录中</span></span><br><span class="line">cd  /builds/go-admin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">将二进制复制到对应的项目目录中并重命名，因为是测试环境 所以是dev-go-admin</span></span><br><span class="line">cp go-admin /www/wwwroot/dev.admin.deovo.com/admin_server/go-admin/dev-go-admin</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">当前时间 格式为230922142900</span></span><br><span class="line">current_time=$(date +&#x27;%y%m%d%H%M%S&#x27;)</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">文件名称</span></span><br><span class="line">new_filename=&quot;go-admin-$&#123;current_time&#125;&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重命名当前文件 目的是为了归档 方便回滚</span></span><br><span class="line">mv go-admin &quot;$new_filename&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">重启dev-go-admin服务</span></span><br><span class="line">supervisorctl restart dev_go_admin:dev_go_admin_00</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>至此整个流程就走完了。服务是用<code>supervisor</code>进行管理，没有使用docker,原因也是应用服务器配置较低。目前整个CI&#x2F;CD流程能够跑通了，最起码我直接点个按钮就可以直接上线，so easy～</p>
 
       </div>
       
         <div class="prev-or-next">
           <div class="post-foot-next">
             
-              <a href="/2023/03/07/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8gorm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
+              <a href="/2023/08/13/%E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88/" target="_self">
                 <i class="iconfont icon-chevronleft"></i>
                 <span>上一页</span>
               </a>
@@ -192,15 +237,21 @@
           <div class="post-attach">
             <span class="post-pubtime">
               <i class="iconfont icon-updatetime" title="更新时间"></i>
-              2023-08-13 22:44:26
+              2023-09-22 13:40:39
             </span>
             
                   <span class="post-tags">
                     <i class="iconfont icon-tags" title="标签"></i>
                     
                     <span class="span--tag">
-                      <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
-                        <b>#</b> 碎碎念
+                      <a href="/tags/Jenkins/" title="Jenkins">
+                        <b>#</b> Jenkins
+                      </a>
+                    </span>
+                    
+                    <span class="span--tag">
+                      <a href="/tags/DevOps/" title="DevOps">
+                        <b>#</b> DevOps
                       </a>
                     </span>
                     
@@ -209,16 +260,28 @@
           </div>
           <div class="post-foot-prev">
             
-              <a href="/2023/09/22/Golang%E9%A1%B9%E7%9B%AE%E5%9F%BA%E4%BA%8EJenkins%E7%9A%84CI-CD%E6%9E%84%E5%BB%BA%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
           </div>
         </div>
       
     </div>
     
+  <div id="btn-catalog" class="btn-catalog">
+    <i class="iconfont icon-catalog"></i>
+  </div>
+  <div class="post-catalog hidden" id="catalog">
+    <div class="title">目录</div>
+    <div class="catalog-content">
+      
+        <ol class="toc"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%89%8D%E6%83%85%E6%8F%90%E8%A6%81"><span class="toc-text">前情提要</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Jenkins"><span class="toc-text">安装Jenkins</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Go%E7%8E%AF%E5%A2%83"><span class="toc-text">安装Go环境</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E4%BB%BB%E5%8A%A1%E9%85%8D%E7%BD%AE"><span class="toc-text">构建任务配置</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA"><span class="toc-text">构建</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E5%8F%91%E5%B8%83"><span class="toc-text">发布</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2"><span class="toc-text">部署</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol>
+      
+    </div>
+  </div>
+
+  
+<script src="/js/catalog.js"></script>
+
+
+
 
     
       <div class="comments-container">
@@ -494,12 +557,12 @@
       </a>
       <div class="share-content hidden">
         
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88 + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2023%2F08%2F13%2F%25E6%2580%25BB%25E6%2583%25B3%25E5%2586%2599%25E7%2582%25B9%25E4%25BB%2580%25E4%25B9%2588%2F + '" target="_blank" title="Twitter">
+          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + Golang%E9%A1%B9%E7%9B%AE%E5%9F%BA%E4%BA%8EJenkins%E7%9A%84CI%2FCD%E6%9E%84%E5%BB%BA%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2023%2F09%2F22%2FGolang%25E9%25A1%25B9%25E7%259B%25AE%25E5%259F%25BA%25E4%25BA%258EJenkins%25E7%259A%2584CI-CD%25E6%259E%2584%25E5%25BB%25BA%25E5%258F%2591%25E5%25B8%2583%25E9%2583%25A8%25E7%25BD%25B2%25E6%25B5%2581%25E7%25A8%258B%2F + '" target="_blank" title="Twitter">
             <i class="iconfont icon-twitter"></i>
           </a>
         
         
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2023/08/13/%E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88/" target="_blank" title="Facebook">
+          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2023/09/22/Golang%E9%A1%B9%E7%9B%AE%E5%9F%BA%E4%BA%8EJenkins%E7%9A%84CI-CD%E6%9E%84%E5%BB%BA%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/" target="_blank" title="Facebook">
             <i class="iconfont icon-facebooksquare"></i>
           </a>
         
