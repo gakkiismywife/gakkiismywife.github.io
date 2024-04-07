@@ -11,7 +11,7 @@
   
   <title>
     
-      总想写点什么 
+      archive_a: 2024 
       
       
       |
@@ -110,130 +110,235 @@
 
 
       <div class="flex-container">
-        <!-- 文章详情页，展示文章具体内容，url形式：https://yoursite/文章标题/ -->
-<!-- 同时为「标签tag」，「朋友friend」，「分类categories」，「关于about」页面的承载页面，具体展示取决于page.type -->
+        <!-- 归档页，展示本站所有文章，按照年份降序归类，url形式：https://yoursite/archives/ -->
 
+<!-- last: 按年份把文章分组，当前遍历到的年份 -->
+<!-- now: 当前遍历到的文章的发布年份 -->
 
-  <!-- LaTex Display -->
-
-  
-    <script async type="text/javascript" src="/plugins/mathjax/tex-chtml.js"></script>
-  
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      }
-    }
-  </script>
-
-
-
-
-
-  <!-- clipboard -->
-
-  
-    <script async type="text/javascript" src="/plugins/clipboard.min.js"></script>
-  
-  
-<script src="/js/codeCopy.js"></script>
-
-
-
-
-
-
-
-  
-
-  
-
-  
-
-  
-  <!-- 文章内容页 url形式：https://yoursite/文章标题/ -->
-  <div class="container post-details" id="post-details">
-    <div class="post-content">
-      <div class="post-title">总想写点什么</div>
-      <div class="post-attach">
-        <span class="post-pubtime">
-          <i class="iconfont icon-updatetime" title="更新时间"></i>
-          2023-08-13 22:44:26
-        </span>
-        
-              <span class="post-tags">
-                <i class="iconfont icon-tags" title="标签"></i>
-                
-                <span class="span--tag">
-                  <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
-                    <b>#</b> 碎碎念
-                  </a>
-                </span>
-                
-              </span>
-          
-      </div>
-      <div class="markdown-body">
-        <p>从上一次失业距离现在已经过了2个月了，找了个小公司先干着。</p>
-<p>差不多快半年没写博客了，所以总想着要写点什么，但是最近没什么任何精力。</p>
-
-      </div>
-      
-        <div class="prev-or-next">
-          <div class="post-foot-next">
-            
-              <a href="/2023/03/07/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8gorm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
-                <i class="iconfont icon-chevronleft"></i>
-                <span>上一页</span>
-              </a>
-            
-          </div>
-          <div class="post-attach">
-            <span class="post-pubtime">
-              <i class="iconfont icon-updatetime" title="更新时间"></i>
-              2023-08-13 22:44:26
-            </span>
-            
-                  <span class="post-tags">
-                    <i class="iconfont icon-tags" title="标签"></i>
-                    
-                    <span class="span--tag">
-                      <a href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/" title="碎碎念">
-                        <b>#</b> 碎碎念
-                      </a>
-                    </span>
-                    
-                  </span>
-              
-          </div>
-          <div class="post-foot-prev">
-            
-              <a href="/2023/09/22/Golang%E9%A1%B9%E7%9B%AE%E5%9F%BA%E4%BA%8EJenkins%E7%9A%84CI-CD%E6%9E%84%E5%BB%BA%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/" target="_self">
-                <span>下一页</span>
-                <i class="iconfont icon-chevronright"></i>
-              </a>
-            
-          </div>
+<div class="container archives">
+  <div class="post-list">
+    
+        <!-- 后续文章的发布年份呈现 -->
+        <div class="content-title">
+          <h2>
+            <span>2024</span>
+          </h2>
         </div>
       
-    </div>
+      <div class="post-item" title="记录清明出游">
+        <div class="time-m-d">04-08</div>
+        <div class="title">
+          <a href="/2024/04/08/%E6%91%98%E6%8A%84/">
+            <span>记录清明出游</span>
+          </a>
+        </div>
+      </div>
     
-
+        <!-- 后续文章的发布年份呈现 -->
+        <div class="content-title">
+          <h2>
+            <span>2023</span>
+          </h2>
+        </div>
+      
+      <div class="post-item" title="2023年11月28日随想">
+        <div class="time-m-d">11-28</div>
+        <div class="title">
+          <a href="/2023/11/28/2023%E5%B9%B411%E6%9C%8828%E6%97%A5%E9%9A%8F%E6%83%B3/">
+            <span>2023年11月28日随想</span>
+          </a>
+        </div>
+      </div>
     
-      <div class="comments-container">
-        
-
-
-
-
-
-
-
+      <div class="post-item" title="Golang项目基于Jenkins的CI/CD构建发布部署流程">
+        <div class="time-m-d">09-22</div>
+        <div class="title">
+          <a href="/2023/09/22/Golang%E9%A1%B9%E7%9B%AE%E5%9F%BA%E4%BA%8EJenkins%E7%9A%84CI-CD%E6%9E%84%E5%BB%BA%E5%8F%91%E5%B8%83%E9%83%A8%E7%BD%B2%E6%B5%81%E7%A8%8B/">
+            <span>Golang项目基于Jenkins的CI/CD构建发布部署流程</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="总想写点什么">
+        <div class="time-m-d">08-13</div>
+        <div class="title">
+          <a href="/2023/08/13/%E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88/">
+            <span>总想写点什么</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="记录mysql字段相减遇到的问题">
+        <div class="time-m-d">03-07</div>
+        <div class="title">
+          <a href="/2023/03/07/%E8%AE%B0%E5%BD%95%E4%BD%BF%E7%94%A8gorm%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98/">
+            <span>记录mysql字段相减遇到的问题</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="记一次QQ崩了">
+        <div class="time-m-d">02-10</div>
+        <div class="title">
+          <a href="/2023/02/10/%E8%AE%B0%E4%B8%80%E6%AC%A1QQ%E5%B4%A9%E4%BA%86/">
+            <span>记一次QQ崩了</span>
+          </a>
+        </div>
+      </div>
+    
+        <!-- 后续文章的发布年份呈现 -->
+        <div class="content-title">
+          <h2>
+            <span>2022</span>
+          </h2>
+        </div>
+      
+      <div class="post-item" title="基于k3s集群学习Deployment和ReplicaSet">
+        <div class="time-m-d">12-19</div>
+        <div class="title">
+          <a href="/2022/12/19/%E5%9F%BA%E4%BA%8Ek3s%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0Deployment%E5%92%8CReplicaSet/">
+            <span>基于k3s集群学习Deployment和ReplicaSet</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="基于k3s集群学习Pod基础概念">
+        <div class="time-m-d">12-19</div>
+        <div class="title">
+          <a href="/2022/12/19/%E5%9F%BA%E4%BA%8Ek3s%E9%9B%86%E7%BE%A4%E5%AD%A6%E4%B9%A0Pod%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+            <span>基于k3s集群学习Pod基础概念</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="k3s集群安装部署实例">
+        <div class="time-m-d">12-19</div>
+        <div class="title">
+          <a href="/2022/12/19/k3s%E9%9B%86%E7%BE%A4%E5%AE%89%E8%A3%85%E9%83%A8%E7%BD%B2%E5%AE%9E%E4%BE%8B/">
+            <span>k3s集群安装部署实例</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="基于ChromeDp实现远程调用浏览器">
+        <div class="time-m-d">12-01</div>
+        <div class="title">
+          <a href="/2022/12/01/%E5%9F%BA%E4%BA%8EChromeDp%E5%AE%9E%E7%8E%B0%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8%E6%B5%8F%E8%A7%88%E5%99%A8/">
+            <span>基于ChromeDp实现远程调用浏览器</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="基于ChromeDp的多标签页开发">
+        <div class="time-m-d">12-01</div>
+        <div class="title">
+          <a href="/2022/12/01/%E5%9F%BA%E4%BA%8EChromeDp%E7%9A%84%E5%A4%9A%E6%A0%87%E7%AD%BE%E9%A1%B5%E5%BC%80%E5%8F%91/">
+            <span>基于ChromeDp的多标签页开发</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="做自己">
+        <div class="time-m-d">11-01</div>
+        <div class="title">
+          <a href="/2022/11/01/%E5%81%9A%E8%87%AA%E5%B7%B1/">
+            <span>做自己</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="记录国庆">
+        <div class="time-m-d">10-13</div>
+        <div class="title">
+          <a href="/2022/10/13/%E8%AE%B0%E5%BD%95%E5%9B%BD%E5%BA%86/">
+            <span>记录国庆</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="多说话">
+        <div class="time-m-d">09-18</div>
+        <div class="title">
+          <a href="/2022/09/18/%E5%A4%9A%E8%AF%B4%E8%AF%9D/">
+            <span>多说话</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="关于买车">
+        <div class="time-m-d">09-03</div>
+        <div class="title">
+          <a href="/2022/09/03/%E5%85%B3%E4%BA%8E%E4%B9%B0%E8%BD%A6/">
+            <span>关于买车</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="立秋">
+        <div class="time-m-d">08-07</div>
+        <div class="title">
+          <a href="/2022/08/07/%E7%AB%8B%E7%A7%8B/">
+            <span>立秋</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="20220802随笔">
+        <div class="time-m-d">08-02</div>
+        <div class="title">
+          <a href="/2022/08/02/20220802%E9%9A%8F%E7%AC%94/">
+            <span>20220802随笔</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="PHP单元测试Mock重载">
+        <div class="time-m-d">07-23</div>
+        <div class="title">
+          <a href="/2022/07/23/PHP%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95Mock%E9%87%8D%E8%BD%BD/">
+            <span>PHP单元测试Mock重载</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="记录一次自驾游旅行">
+        <div class="time-m-d">07-17</div>
+        <div class="title">
+          <a href="/2022/07/17/%E8%AE%B0%E5%BD%95%E4%B8%80%E6%AC%A1%E8%87%AA%E9%A9%BE%E6%B8%B8%E6%97%85%E8%A1%8C/">
+            <span>记录一次自驾游旅行</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="分享工作环境docker配置">
+        <div class="time-m-d">07-16</div>
+        <div class="title">
+          <a href="/2022/07/16/%E5%88%86%E4%BA%AB%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83docker%E9%85%8D%E7%BD%AE/">
+            <span>分享工作环境docker配置</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="随笔">
+        <div class="time-m-d">07-08</div>
+        <div class="title">
+          <a href="/2022/07/08/%E9%9A%8F%E7%AC%94/">
+            <span>随笔</span>
+          </a>
+        </div>
+      </div>
+    
+      <div class="post-item" title="我的第一篇博客">
+        <div class="time-m-d">07-02</div>
+        <div class="title">
+          <a href="/2022/07/02/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/">
+            <span>我的第一篇博客</span>
+          </a>
+        </div>
       </div>
     
   </div>
-
+</div>
 
         
 <div class="footer">
@@ -487,24 +592,6 @@
 
 
         
-  
-    <div class="share-icon tools-bar-item">
-      <a href="javascript: void(0)" id="share-icon">
-        <i class="iconfont iconshare"></i>
-      </a>
-      <div class="share-content hidden">
-        
-          <a class="share-item" href="https://twitter.com/intent/tweet?text=' + %E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88 + '&url=' + http%3A%2F%2Fgakkiismywife.github.io%2F2023%2F08%2F13%2F%25E6%2580%25BB%25E6%2583%25B3%25E5%2586%2599%25E7%2582%25B9%25E4%25BB%2580%25E4%25B9%2588%2F + '" target="_blank" title="Twitter">
-            <i class="iconfont icon-twitter"></i>
-          </a>
-        
-        
-          <a class="share-item" href="https://www.facebook.com/sharer.php?u=http://gakkiismywife.github.io/2023/08/13/%E6%80%BB%E6%83%B3%E5%86%99%E7%82%B9%E4%BB%80%E4%B9%88/" target="_blank" title="Facebook">
-            <i class="iconfont icon-facebooksquare"></i>
-          </a>
-        
-      </div>
-    </div>
   
   
 <script src="/js/shares.js"></script>
